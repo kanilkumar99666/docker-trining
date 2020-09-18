@@ -1,0 +1,278 @@
+Service
+========================
+	TYPES
+		ClustorIP
+			Create a Service but IP range is from POD network aka clustor
+		NodePort
+			Create a Service but IP range is from POD network aka clustor
+			plus
+			service would get exposed to EACH node of the clustor.
+				         ----------
+					  port forward
+		Loadbalancer
+			Create a Service but IP range is from POD network aka clustor
+			plus
+			service would get exposed to EACH node of the clustor.
+				         ----------
+					  port forward
+			Plus
+			One Ext LOadBalancer would create and 
+			Each Node of the clustor would be addedd to LB.
+
+
+15.207.88.203
+centos
+centos123
+
+
+kubectl create service clusterip my-cs --tcp=5678:80 -n=rajesh
+
+
+ 413  vi pod.yaml
+  414  kubectl delete -f pod.yaml -n=rajesh
+  415  kubectl create -f pod.yaml -n=rajesh
+  416  clear
+  417  kubectl get pod -n=rajesh -o wide --show-labels
+  418  curl http://10.44.0.1
+  419  kubectl create service -h
+  420  clear
+  421  kubectl create service -h
+  422  kubectl create service clusterip -h
+  423  clear
+  424  kubectl create service clusterip my-cs --tcp=5678:80 -n=rajesh
+  425  kubectl get svc -n=rajesh
+  426  kubectl get svc
+  427  kubectl get svc -n=rajesh
+  428  kubectl describe svc my-cs -n=rajesh
+  429  clear
+  430  kubectl describe svc my-cs -n=rajesh --show-labels
+  431  kubectl get svc my-cs -n=rajesh --show-labels
+  432  kubectl get pod -n=rajesh --show-labels
+  433  kubectl edit svc my-cs -n=rajesh
+  434  kubectl get pod -n=rajesh --show-labels
+  435  kubectl get svc my-cs -n=rajesh --show-labels
+  436  kubectl describe svc my-cs -n=rajesh --show-labels
+  437  kubectl describe svc my-cs -n=rajesh
+  438  kubectl edit svc my-cs -n=rajesh
+  439  kubectl describe svc my-cs -n=rajesh
+  440  curl http://10.109.231.62
+  441  curl http://10.109.231.62:5678
+  442  clear
+  443  ls
+  444  co pod.yaml pod1.yaml
+  445  cp pod.yaml pod1.yaml
+  446  vi pod.yaml
+  447  kubectl create -f pod.yaml -n=rajesh
+  448  kubectl describe svc my-cs -n=rajesh
+  449  curl http://10.109.231.62:5678
+  450  clear
+  451  ls
+  452  vi pod.yaml
+  453  kubectl create -f pod.yaml -n=rajesh
+  454  vi pod.yaml
+  455  kubectl create -f pod.yaml -n=rajesh
+  456  kubectl describe svc my-cs -n=rajesh
+  457  watch curl http://10.109.231.62:5678
+  458  clear
+  459  history
+
+kubectl create service nodeport my-ns --tcp=5678:80 -n=rajesh
+
+
+ 460  clear
+  461  kubectl create service
+  462  kubectl create service nodeport -h
+  463  clear
+  464  kubectl get svc -n=rajesh
+  465  kubectl create service nodeport my-ns --tcp=5678:80 -n=rajesh
+  466  kubectl get svc -n=rajesh
+  467  kubectl describe svc my-ns -n=rajesh
+  468  kubectl get pods --show-labels -n=rajesh
+  469  kubectl edit svc my-ns -n=rajesh
+  470  kubectl describe svc my-ns -n=rajesh
+  471  cleart
+  472  clear
+  473  kubectl get svc -n=rajesh
+  474  watch curl http://10.106.14.64:5678
+
+
+kubectl create service loadbalancer my-lm --tcp=5678:80 -n=rajesh
+
+
+kubectl expose deploy my-dep1 --port=80 --target-port=80 --name=final --type=LoadBalancer -n=rajesh
+
+demo.devopsschool.com
+
+
+ 491  kubectl craete -f dep1.yaml -n=rajesh
+  492  kubectl ceeate -f dep1.yaml -n=rajesh
+  493  kubectl create -f dep1.yaml -n=rajesh
+  494  kubectl get pods -nm=rajesh
+  495  clear
+  496  kubectl get pods -n=rajesh
+  497  kubectl export -h
+  498  kubectl expose -h
+  499  kubectl get pods -n=rajesh
+  500  clear
+  501  kubectl expose deploy my-dep1 --port=80 --target-port=80 --name=final --type=LoadBalancer
+  502  clear
+  503  kubectl expose deploy my-dep1 --port=80 --target-port=80 --name=final --type=LoadBalancer -n=rajesh
+  504  kubectl get svc -n=rajesh
+  505  kubectl describe svc final -n=rajesh
+
+====================================================
+Kubernetes Volume
+==============================
+- PODS are emp*
+	So Data of the POD(Container) Emph*
+
+=====================================
+Kubernetes
+		uses 
+			Volume Interface aka plugins
+					Understand Storage
+================================================================
+Storage Technology
+	Block Storage such as Laptop Storage, EBS
+	
+	Object Storgae such as Git, Gdrive, s3
+
+	File Storage (Network) such as NFS, efs
+
+
+Volume Interface aka Volume Plugin
+===================
+is built in Kubernetes.
+https://kubernetes.io/docs/concepts/storage/volumes/
+
+awsElasticBlockStore
+azureDisk
+azureFile
+cephfs
+cinder
+configMap
+csi
+downwardAPI
+emptyDir
+fc (fibre channel)
+flexVolume
+flocker
+gcePersistentDisk
+gitRepo (deprecated)
+glusterfs
+hostPath
+iscsi
+local
+nfs
+persistentVolumeClaim
+projected
+portworxVolume
+quobyte
+rbd
+scaleIO
+secret
+storageos
+vsphereVolume
+
+https://kubernetes.io/docs/concepts/storage/storage-classes/
+https://kubernetes.io/docs/concepts/storage/persistent-volumes/
+
+1. I want to store data in the host aka worker	=> HostPath  - Can be used only by one POD at a time.
+2. I want to store data in the NFS mount	=> NFS 	   - Can be used multiple POD at a time.
+3. I want to store data in the Clustor (etcd)  - key - value - configMap
+==================================================================================
+			LIFECYCLE OF KUBERNET Volume
+=================================================================================
+Provisioning			=> Binding		=> Using 		=> Reclaim
+=====================================================================================
+making a Pool of Volume		=> Claiminng a vol	=> POD & Container
+avai for Clustor
+=================		============		================
+Admin				user			user
+- Static - PV			PVC			pod.spec.volume
+- Dynamic - StorageClass(PV)	PVC			pod.spec.container.volumemounts
+===================================================================================
+https://www.devopsschool.com/blog/persistentvolume-persistentvolumeclaim-volumes-using-hostpath/
+
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: hostpath1
+  labels:
+    type: local
+spec:
+  storageClassName: manual
+  capacity:
+    storage: 1Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "/tmp/devopsschool1"
+
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: hostpath2
+  labels:
+    type: local
+spec:
+  storageClassName: manual
+  capacity:
+    storage: 1Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "/tmp/devopsschool2"
+
+
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: pvchostpath1
+spec:
+  storageClassName: manual
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: pvchostpath2
+spec:
+  storageClassName: manual
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 3Gi
+
+
+kind: Pod
+apiVersion: v1
+metadata:
+  name: task-pv-pod
+spec:
+  containers:
+    - name: task-pv-container
+      image: scmgalaxy/nginx-devopsschoolv1
+      ports:
+        - containerPort: 80
+          name: "http-server"
+      volumeMounts:
+        - mountPath: "/usr/share/nginx/html"
+          name: task-pv-storage
+  volumes:
+    - name: task-pv-storage
+      persistentVolumeClaim:
+        claimName: pvchostpath1
+
+https://www.devopsschool.com/blog/kubernetes-persistentvolume-and-persistentvolumeclaim-using-nfs-volume-types/
+https://www.devopsschool.com/tutorial/kubernetes/kubernetes-resource-objects/secrets-example-programs.html
+https://www.devopsschool.com/tutorial/kubernetes/labs/lab-9-kubernetes-configMaps-secrets.htmls
+
+
+
